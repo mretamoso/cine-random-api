@@ -1,12 +1,12 @@
-// src/index.js
+
 import express from 'express';
 import cors from 'cors';
 import {
   getTodayShowtimes,
-  filterFromNow,
   groupByMovie,
-  pickRandomMovie
+  isTimeFromNow
 } from './services/scraper.js';
+
 
 const app = express();
 const PORT = 3001;
@@ -19,22 +19,29 @@ app.get('/api/random-movie', async (req, res) => {
 
     const allShowtimes = await getTodayShowtimes(cineSlug);
 
-    const futuras = filterFromNow(allShowtimes);
+    const agrupadas = groupByMovie(allShowtimes);
 
-    const agrupadas = groupByMovie(futuras);
+    const candidatas = agrupadas.filter(movie =>
+      movie.horarios.some(h => isTimeFromNow(h))
+    );
 
-    const randomMovie = pickRandomMovie(agrupadas);
-
-    if (!randomMovie) {
+    if (!candidatas.length) {
       return res.status(404).json({
         message: 'No se encontraron funciones a partir de la hora actual 🙁'
       });
     }
 
+    const idx = Math.floor(Math.random() * candidatas.length);
+    const randomMovie = candidatas[idx];
+
+    const horariosFuturos = randomMovie.horarios.filter(h =>
+      isTimeFromNow(h)
+    );
+
     res.json({
       cine: cineSlug,
       titulo: randomMovie.titulo,
-      horarios: randomMovie.horarios
+      horarios: horariosFuturos
     });
   } catch (err) {
     console.error(err);
@@ -44,6 +51,7 @@ app.get('/api/random-movie', async (req, res) => {
     });
   }
 });
+
 
 app.listen(PORT, () => {
   console.log(`API escuchando en http://localhost:${PORT}`);

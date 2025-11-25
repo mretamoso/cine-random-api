@@ -1,0 +1,31 @@
+# Dependencias
+node_modules/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+
+# Builds / compilados
+dist/
+build/
+.next/
+out/
+coverage/
+
+# Archivos de entorno (¡no subir claves!)
+.env
+.env.local
+.env.*.local
+
+# Cachés
+.cache/
+.turbo/
+.vite/
+.parcel-cache/
+
+# SO (Windows / macOS)
+Thumbs.db
+.DS_Store

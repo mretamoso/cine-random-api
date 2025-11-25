@@ -100,3 +100,16 @@ export function pickRandomMovie(grouped) {
   const idx = Math.floor(Math.random() * grouped.length);
   return grouped[idx];
 }
+
+// Compara una hora "HH:mm" con la hora actual (en minutos)
+export function isTimeFromNow(horaStr) {
+  const [h, m] = horaStr.split(':').map(Number);
+
+  const ahora = new Date();
+  const ahoraMinutes = ahora.getHours() * 60 + ahora.getMinutes();
+
+  const showMinutes = h * 60 + m;
+
+  // true si el horario es igual o después de la hora actual
+  return showMinutes >= ahoraMinutes;
+}
